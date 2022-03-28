@@ -28,6 +28,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Movies"
+  
   /movies/{id}:
     get:
       tags:
@@ -53,6 +54,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Errors"
+  
   /users/favorites:
     get:
       tags:
@@ -110,6 +112,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Errors"
+  
   /users/{id}/favorites/{movieId}:
     delete:
       tags:
@@ -232,6 +235,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Errors"
+
+  /admins/{username}/movies:
+    post:
+      tags:
+      - Admins
+      security:
+        - bearerAuth: []
+      summary: "Create a new movie"
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: Username of the admin who will create the movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Movie"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddedMovie"
+        "400":
+          description: Blocked operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+
+  /admins/{username}/movies/{movieId}:
+    delete:
+      tags:
+      - Admins
+      security:
+        - bearerAuth: []
+      summary: "Delete an existing movie"
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: Username of the admin who will delete the movie
+        - in: path
+          name: movieId
+          schema:
+            type: string
+          required: true
+          description: MovieId of the movie who will delete the movie
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+
+  /admins/{username}/user/{username1}:
+    put:
+      tags:
+      - Admins
+      security:
+        - bearerAuth: []
+      summary: "Delete an existing movie"
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: Username of the admin who will delete the movie
+        - in: path
+          name: username1
+          schema:
+            type: string
+          required: true
+          description: Username of the user who will become admin
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -397,4 +527,36 @@ components:
           type: object
           properties:
             movieId:
+              type: string
+    AddedMovie:
+      type: object
+      properties:
+        message:
+          type: string
+        movie:
+          type: object
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+            popularity:
+              type: number
+            genre:
+              type: string
+            original_language:
+              type: string
+            plot:
+              type: string
+            poster_path:
+              type: number
+            trailer:
+              type: string
+            backdrop_path:
+              type: string
+            release_date:
+              type: string
+            adult:
+              type: boolean
+            vote_average:
               type: string
