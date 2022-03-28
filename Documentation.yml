@@ -1,0 +1,271 @@
+openapi: "3.0.2"
+info:
+  title: VideoProjectCourse16
+  version: "1.0"
+servers:
+  - url: https://videoprojectcourse16.herokuapp.com   
+paths:
+  /movies:
+    get:
+      summary: "Get All movies"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movies"
+  /movies/{id}:
+    get:
+      summary: "Get specific movie infos"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the movie to get
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+  /users/favorites:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get all favorites movies"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getFavorites"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+    post: 
+      security:
+        - bearerAuth: []
+      summary: "add movie to favourites"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Favorite"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+  /users/{id}/favorites/{movieId}:
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete a movie from favourites with a specific Id"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+        
+  # /auth/signup:
+  #   post:
+  #     security:
+  #       - bearerAuth: []
+  #     summary: "signup on application"
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/Movie'
+  #     responses:
+  #       "200":
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Favorite"
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/UnauthorizedError"
+  #       "404":
+  #         description: Movie not found
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Errors"
+
+
+    
+                
+components:
+  securitySchemes:
+    bearerAuth:           
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Movies:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          title:
+            type: string
+          popularity:
+            type: number
+          genre:
+            type: string
+          original_language:
+            type: string
+          plot:
+            type: string
+          poster_path:
+            type: number
+          trailer:
+            type: string
+          backdrop_path:
+            type: string
+          release_date:
+            type: string
+          adult:
+            type: boolean
+          vote_average:
+            type: string
+    Errors: 
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        popularity:
+          type: number
+        genre:
+          type: string
+        original_language:
+          type: string
+        plot:
+          type: string
+        poster_path:
+          type: number
+        trailer:
+          type: string
+        backdrop_path:
+          type: string
+        release_date:
+          type: string
+        adult:
+          type: boolean
+        vote_average:
+          type: string
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    getFavorites:
+      type: object
+      properties:
+        message:
+          type: string
+        favorites:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              popularity:
+                type: number
+              genre:
+                type: string
+              original_language:
+                type: string
+              plot:
+                type: string
+              poster_path:
+                type: number
+              trailer:
+                type: string
+              backdrop_path:
+                type: string
+              release_date:
+                type: string
+              adult:
+                type: boolean
+              vote_average:
+                type: string 
+    Favorite:
+      type: object
+      properties:
+        message:
+          type: string
+        favorite:
+          type: object
+          properties: 
+            movieId:
+              type: string
