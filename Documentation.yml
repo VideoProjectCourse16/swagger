@@ -183,7 +183,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UnauthorizedError"
-        "404":
+        "422":
           description: Movie not found
           content:
             application/json:
